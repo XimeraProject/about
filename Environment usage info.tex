@@ -1,0 +1,173 @@
+\documentclass{ximera}
+\title{Question and Answer environments}
+
+\begin{document}
+The below is documentation on how to use (and create) environments for questions and responses.
+
+\tableofcontents
+
+\section{For the User}
+This content is for the person writing the latex code. It contains information regarding the environments currently implemented. If you wish to add more (or tweak the code) see the "For the developer" section below.
+
+\subsection{Questions}
+This is for the various "question" environments. They are currently all the same, but have separate sections in case this changes.
+
+\subsubsection{On Numbering}
+Numbering for all question environment types are still numbered sequentially (hence, if you compile this file, you can see that you get Question 1 then Problem 2, then Exercise 3, and finally Exploration 4). 
+
+The main exception to this is the shuffle environment, which has different behavior depending on if the file type is a handout or not. See Shuffle for specifics.
+
+
+\subsubsection{Question}
+The Question environment is typed as an environment and has the prompt "Question" as it's title. 
+
+\begin{question}
+Here is a question. There is currently just a question here, but nothing else.
+$\answer{test}$
+\end{question}
+
+\subsubsection{Problem}
+The Problem environment is typed as an environment and has the prompt "Problem" as it's title. 
+
+\begin{problem}
+Here is a question. There is currently just a question here, but nothing else.
+$\answer{test}$
+\end{problem}
+
+
+\subsubsection{Exercise}
+The exercise environment is typed as an environment and has the prompt "Exercise" as it's title. 
+
+\begin{exercise}
+Here is a question. There is currently just a question here, but nothing else.
+$\answer{test}$
+\end{exercise}
+
+
+\subsubsection{Exploration}
+The exploration environment is typed as an environment and has the prompt "Exploration" as it's title. 
+
+\begin{exploration}
+Here is a question. There is currently just a question here, but nothing else.
+$\answer{test}$
+\end{exploration}
+
+\subsection{Answers}
+
+\subsubsection{Short Answer}
+In order to have a short answer you can use the command "answer" with a single argument and an optional argument. The required argument is the desired answer, whereas the optional argument is tolerance for numeric problems.
+
+Thus we can use the following
+
+\begin{problem}
+What is 2 + 2? 
+$\answer{4}$
+\end{problem}
+
+And, for the engineers among us we can use the tolerance factor;
+\begin{problem}
+What is $\pi$?
+$\answer[tolerance=.14]{3.14}$
+\end{problem}
+The above is $3.14$ with a tolerance of $0.14$. This means that we can take the answer 3, but we can't take the answer $2.99$ or $3.29$. Note that, if we simply wrote $\pi$ it would still work.
+
+\subsubsection{Multiple Choice}
+To answer with multiple choice, we can use the multipleChoice environment. Keep in mind that (currently) there is no way to put a hard limit on number of guesses, but there are some metrics that could (theoretically) take number of guesses into account. 
+
+You can use an optional argument to mark any given answer correct. Note that this means that multipleChoice can be used for the "choose all that are correct" style questions.
+
+For example:
+\begin{problem}
+Which of these is the right answer?
+\begin{multipleChoice}
+\choice{This one?}
+\choice{Maybe this one?}
+\choice[correct]{Definitely this one}
+\end{multipleChoice}
+\end{problem}
+
+\begin{problem}
+Which of these is the right answer? (Mark all that are correct)
+\begin{multipleChoice}
+\choice{Definitely not this one?}
+\choice{Maybe this one? Not so much.}
+\choice[correct]{Definitely this one.}
+\choice[correct]{And this one.}
+\choice[correct]{Probably this one too.}
+\end{multipleChoice}
+\end{problem}
+
+
+
+\subsubsection{Free Response}
+There is a free response answer style that saves the content verbatem into the database (somewhere) but does not parse or grade in any manner. Thus it must be looked over individually by an instructor/grader to assign grades. 
+
+Needs more details added (by someone that has actually used this).
+
+\subsection{Shuffle} 
+The shuffle environment will take a list of question environment types and shuffle their order and serve up the optional argument number of them (1 by default). If the optional number is higher than the number of questions, shuffle will automatically list all the questions (without blank questions).
+
+So for example, the below has no argument, and so it will take one of the question environments within it at random and display it. Recompile several times to see the change.
+
+\begin{shuffle}
+\begin{problem}
+This is my first problem!
+\end{problem}
+
+\begin{problem}
+This is my second problem!
+\end{problem}
+
+\begin{problem}
+This is my third problem!
+\end{problem}
+
+\begin{problem}
+This is my fourth problem!
+\end{problem}
+\end{shuffle}
+
+In contrast, the below shuffle has an optional argument of 3, so it will choose 3 questions and order them randomly.
+
+\begin{shuffle}[3]
+\begin{problem}
+This is my first problem!
+\end{problem}
+
+\begin{problem}
+This is my second problem!
+\end{problem}
+
+\begin{problem}
+This is my third problem!
+\end{problem}
+
+\begin{problem}
+This is my fourth problem!
+\end{problem}
+\end{shuffle}
+
+Note that shuffle is taking place at the latex level. This means that, although when compiled by xake the ordering will be random, the ordering will \textbf{not} be random by student. Thus each student will see identical assignments.
+
+\textbf{Numbering}: \\
+Notice that the numbering may change depending on if the document is labeled as a "handout". Without the "handout" tag on the documentclass, shuffle uses a sub-numbering system. Thus for the second shuffle environment it is question 10, and since there are 3 elements, they are 10.1, 10.2, 10.3.
+
+\textbf{Known issues}:\\
+\begin{enumerate}
+\item The shuffle environment currently overwrites the question type with "problem" environment, regardless of question type in the latex document (it won't error, it will just overwrite it). This is a byproduct of how environments are handled in latex currently.
+\item The shuffle environment without handout mode will always use sub numbering, even if there is only 1 question (see the first shuffle environment).
+\end{enumerate}
+
+
+
+\subsection{Grading}
+To be added... hopefully.
+
+\section{For the Developer}
+
+\subsection{Question Environments}
+
+
+\subsection{Answer Environments}
+
+\end{document}
