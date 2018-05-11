@@ -1,0 +1,120 @@
+\documentclass{ximera}
+\title{Security}
+
+\begin{document}
+\begin{abstract}
+  The Ximera development team is committed to protecting your data.
+\end{abstract}
+\maketitle
+
+The Ximera team encourages users to \link[join the Ximera mailing
+list]{http://go.osu.edu/ximera-mailing-list} in order to receive
+updates on new features, disclosures about bugs, and discussion of
+security issues around Ximera and its data.
+
+How are you taking steps to implement the top 10 proactive controls
+(OWASP)
+
+Can you attest that you periodically test to make sure you are free of
+OWASP Top 10 vulnerabilities
+
+\section{Threat modeling analysis}
+
+For Ximera, security is not an afterthought but has been baked into
+the design from the very beginning.  This means security is expressed
+not only through code, but also through the team's workflow and
+through the underlying design.  For instance, because the long-term
+goal of Ximera is a federated network of lightweight servers (and
+ultimately \textit{no servers at all} through IPFS), the highest
+levels of permission are granted to users via GPG keys which already
+play well with a federated web of trust.
+
+\subsection{Security Objectives}
+
+Security begins by specifying our objectives.  In terms of user
+stories, there are two main populations who both need controlled
+access to data to fulfill their own objectives.
+\begin{itemize}
+\item As an instructor, I want to see how a particular student is
+  doing on assignments related to an upcoming lecture.
+\item As an author, I want to understand how students, in the
+  aggregate, are engaging with my content.
+\end{itemize}
+The role of ``instructor'' is defined via LTI, meaning that a
+student-instructor relationship exists between $A$ and $B$ when user
+$A$ with a student role and user $B$ with an instructor role both
+share the same course context.  That instructor, then, is permitted to
+see the name and work of his/her student in real-time.
+
+The second population---that of authors---are provided not access to
+specific students, but access to de-identified event logs for their
+students (meaning users engaging with content in their repository).
+Authors are \textit{not} identified through LTI, but rather through
+proof-of-possession of a private key.  This facilitates a loosely
+federated model, where the same author may have content on multiple
+Ximera servers---without permitting those who control the other
+servers to spoof the identity of an author.  GPG helps to provide a
+consistent digital identity for authors across multiple sites.
+
+To ensure that the team understands how these objectives are met,
+Ximera includes robust logging.
+
+To prepare for the envisioned decentralized future, Ximera, insofar as
+is possible, pushes answer validation and the like to the learner's
+machine.  This addresses a performance issue by avoiding round-trips
+for answer validation, but it also reduces our threat surface because
+the server is \textit{not} executing code provided it by the student.
+When there is a pedagogical reason to rely on a computer algebra
+system for answer adjudication, the Ximera team relies on SageMath and
+the well-sandboxed SageCell servers.
+
+\subsection{Threat vectors and their mitigation}
+
+That authors are permitted to publish arbitrary HTML is the most
+significant threat vector.  This could happen if it were possible to
+spoof the identity of an author who is permitted to publish a
+classroom activity.  At Ximera Workshops, authors are trained to
+protect their GPG keys with a strong passphrase entered via a pinentry
+program.
+
+The second main threat is a denial of service attack; because Ximera
+is committed to open education, it will always be possible for random
+internet users to explore the educational content created on the
+platform, and there is some cost (e.g., a few milliseconds) involved
+in serving each learner.  Plans to add additional VMs are expected to
+reduce this threat.
+
+To protect against information disclosure, the \texttt{xake} tool only
+exports de-identified data.  There is no endpoint for exporting data
+from mongodb.  Similarly, there are no ``superuser'' accounts
+
+To address elevation of privilege, there is a ``superuser'' account
+but its ability is to set flags---but the only power of these flags is
+to decorate a user's account with information and the flags themselves
+do not provide additional permissions.
+
+Finally, there are threats around students cheating on assignments.
+This is made worse by the fact that Ximera, being committed to
+accessibility and open-source, expects authors to make source
+available, and that source code, in some fashion, includes ``the right
+answers'' which could be replayed.  Ultimately the Ximera team
+recommends the use of Ximera for low-stakes formative assessment.
+Additional tooling would be needed for high-stakes assessment.
+
+\section{How we protect your data}
+
+The Ximera team is supported with DevOps provided by Ohio State's
+College of Arts and Sciences Technology Team (ASCTech).  That team
+manages the firewalled virtual machines and ensures that they are
+up-to-date.  We leverage existing security frameworks, like automated
+threat detection tools for cross-site scripting and injection attacks.
+We also leverage existing tools for code auditing, like GitHub's
+automatic threat detection for verifying that the NPM packages that
+Ximera depends on are free from known vulnerabilities, thereby
+ensuring that we aren't using components with known vulnerabilities.
+Involving ASCTech also helps protect the team from potential security
+holes due to misconfiguration of the servers and makes recommendations
+to ensure secure access to the database.
+
+\end{document}
+
